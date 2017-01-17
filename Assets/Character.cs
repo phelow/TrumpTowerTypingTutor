@@ -116,8 +116,23 @@ public class Character : MonoBehaviour
         yield return TrumpTower.ms_instance.GameOverRoutine();
     }
 
-    public bool HasAppointment()
+    public bool HasAppointment(List<Character> characterPool = null)
     {
+        if (characterPool == null)
+        {
+
+            return m_agenda.Count > 0;
+
+        }
+
+        foreach(Character c in characterPool)
+        {
+            if (c.GetAppointments().Contains(this))
+            {
+                return true;
+            }
+        }
+
         return m_agenda.Count > 0;
     }
 

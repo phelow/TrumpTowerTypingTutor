@@ -78,15 +78,34 @@
     <Compile Include="Assets\Character.cs" />
     <Compile Include="Assets\CommunicationBubble.cs" />
     <Compile Include="Assets\Dictionary.cs" />
+    <Compile Include="Assets\FadeIn.cs" />
+    <Compile Include="Assets\HighScore.cs" />
+    <Compile Include="Assets\HitAnyKeyToStart.cs" />
     <Compile Include="Assets\Icon.cs" />
     <Compile Include="Assets\ItineraryBubble.cs" />
+    <Compile Include="Assets\JumpThisScene.cs" />
+    <Compile Include="Assets\MainMenuFadeManager.cs" />
     <Compile Include="Assets\PlayerInput.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Code\DefaultScreenFader.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Code\Fader.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Code\ImageScreenFader.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Code\LinesScreenFader.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Code\SquaredScreenFader.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Code\StripeScreenFader.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Coroutines\DemoCoroutineGUI.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Default\DemoDefaultGUI.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Object Fading\DemoObjectFadingGUI.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Squared\DemoSquaredGUI.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Stripes\DemoStripesGUI.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Demo\Other stuff\RotatableObject.cs" />
+    <Compile Include="Assets\Screen Fader Pack\Demo\Other stuff\SwitchScenesGUI.cs" />
     <Compile Include="Assets\SetLayer.cs" />
     <Compile Include="Assets\TrumpRoom.cs" />
     <Compile Include="Assets\TrumpTower.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Assets\Dictionary 1.txt" />
+    <None Include="Assets\Screen Fader Pack\ReadMe (eng).txt" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Target Name="GenerateTargetFrameworkMonikerAttribute" />

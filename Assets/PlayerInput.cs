@@ -30,6 +30,7 @@ public class PlayerInput : MonoBehaviour {
         m_currentText += nextLetter;
 
         m_selectionText.text = m_currentText;
+        TrumpTower.ms_instance.UpdateOverTextOnAll(m_currentText);
 
 
     }
@@ -38,9 +39,12 @@ public class PlayerInput : MonoBehaviour {
     {
         if(m_currentText.Length > 0)
         {
-            m_currentText = m_currentText.Substring(0, m_currentText.Length - 1);
+            m_currentText = m_currentText.Substring(0, m_currentText.Length - 1 );
         }
+
         m_selectionText.text = m_currentText;
+
+        TrumpTower.ms_instance.UpdateOverTextOnAll(m_currentText);
     }
 
     // Update is called once per frame
@@ -55,12 +59,7 @@ public class PlayerInput : MonoBehaviour {
         {
             TryToVerify();
         }
-
-        if (Input.GetKeyDown(KeyCode.Backspace))
-        {
-            TryToBackSpace();
-        }
-
+        
         if (Input.GetKeyDown(KeyCode.A))
         {
             TryToAdd("a");

@@ -62,6 +62,7 @@ public class TrumpTower : MonoBehaviour
     {
         m_message.text = "Game Over";
         yield return EndLevel();
+        Fader.Instance.FadeIn(1.0f).LoadLevel(1);
     }
 
     public bool IsCharacterInElevator(Character character)
@@ -148,7 +149,7 @@ public class TrumpTower : MonoBehaviour
 
         ClearAllRooms();
 
-        m_levelText.text = "Level " + m_level + " completed!";
+        m_levelText.text = "Level " + m_level++ + " completed!";
         m_intermissionYourScore.text = "Your score: " + m_score;
 
         if (m_score > PlayerPrefs.GetFloat("HighScore", 0.0f))
@@ -329,10 +330,18 @@ public class TrumpTower : MonoBehaviour
             {
                 room.MakeSelectable();
             }
-            else if (room.CurrentResident != null && room.CurrentResident.HasAppointment() && room.CurrentResident.InMeeting == false)
+            else if (room.CurrentResident != null && room.CurrentResident.HasAppointment(m_activeCharacters) && room.CurrentResident.InMeeting == false)
             {
                 room.MakeSelectable();
             }
+        }
+    }
+
+    public void UpdateOverTextOnAll(string testWord)
+    {
+        foreach (TrumpRoom room in m_rooms)
+        {
+            room.CheckForSubstring(testWord);
         }
     }
 
