@@ -24,7 +24,7 @@ public class PlayerInput : MonoBehaviour {
         string potentialNewWord = m_currentText + nextLetter;        
         if (!TrumpTower.ms_instance.ValidWord(potentialNewWord))
         {
-            
+            TrumpTower.ms_instance.ValidWord(m_currentText);
             return;
         }
         m_currentText += nextLetter;
@@ -36,12 +36,21 @@ public class PlayerInput : MonoBehaviour {
 
     void TryToBackSpace()
     {
-
+        if(m_currentText.Length > 0)
+        {
+            m_currentText = m_currentText.Substring(0, m_currentText.Length - 1);
+        }
+        m_selectionText.text = m_currentText;
     }
 
     // Update is called once per frame
     void Update()
     {
+        if (Input.GetKeyDown(KeyCode.Backspace))
+        {
+            TryToBackSpace();
+        }
+
         if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown(KeyCode.Return))
         {
             TryToVerify();

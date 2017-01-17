@@ -50,3 +50,6 @@ TagManager:
   - name: SpriteHeads
     uniqueID: 3089586943
     locked: 0
+  - name: FrontText
+    uniqueID: 1605122395
+    locked: 0

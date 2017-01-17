@@ -238,6 +238,7 @@ public class TrumpTower : MonoBehaviour
     {
         foreach (TrumpRoom room in m_rooms)
         {
+            room.ClearOverText();
             if (room.GetWord() == testWord && testWord != "")
             {
                 Select(room);
@@ -339,13 +340,14 @@ public class TrumpTower : MonoBehaviour
     {
         foreach(TrumpRoom room in m_rooms)
         {
+            room.CheckForSubstring(testWord);
             if(room.GetWord().Length < testWord.Length)
             {
                 continue;
             }
 
             if(room.GetWord().Substring(0,testWord.Length) == testWord)
-            {
+            {                
                 return true;
             }
         }

@@ -36,6 +36,9 @@ public class TrumpRoom : MonoBehaviour
     [SerializeField]
     public GameObject mp_chatBubble;
 
+    [SerializeField]
+    public TextMesh m_overText;
+
     static TrumpRoom ms_instance;
 
 
@@ -78,7 +81,7 @@ public class TrumpRoom : MonoBehaviour
 
     public void MakeSelectable()
     {
-        if(m_selectionText != "")
+        if (m_selectionText != "")
         {
             return;
         }
@@ -137,6 +140,11 @@ public class TrumpRoom : MonoBehaviour
         return m_selectionText;
     }
 
+    public void ClearOverText()
+    {
+        m_overText.text = "";
+    }
+
     private float m_minChatBubbleSpawnTime = 1.0f;
     private float m_maxChatBubbleSpawnTime = 3.0f;
 
@@ -163,9 +171,19 @@ public class TrumpRoom : MonoBehaviour
             yield return new WaitForSeconds(m_waitTime);
             t += m_waitTime;
         }
-        
+
         m_currentVisitor.InMeeting = false;
         m_currentResident.InMeeting = false;
+    }
+
+    public void CheckForSubstring(string currentText)
+    {
+        m_overText.text = "";
+        if (currentText.Length <= m_selectionText.Length && m_selectionText.Substring(0, currentText.Length) == currentText)
+        {
+            m_overText.text = currentText;
+        }
+
     }
 
     public float CheckForMeeting()
