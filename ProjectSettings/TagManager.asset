@@ -41,3 +41,12 @@ TagManager:
   - name: Default
     uniqueID: 0
     locked: 0
+  - name: Characters
+    uniqueID: 945275713
+    locked: 0
+  - name: SpeechBubble
+    uniqueID: 1844587355
+    locked: 0
+  - name: SpriteHeads
+    uniqueID: 3089586943
+    locked: 0

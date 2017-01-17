@@ -76,7 +76,10 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Assets\Character.cs" />
+    <Compile Include="Assets\CommunicationBubble.cs" />
     <Compile Include="Assets\Dictionary.cs" />
+    <Compile Include="Assets\Icon.cs" />
+    <Compile Include="Assets\ItineraryBubble.cs" />
     <Compile Include="Assets\PlayerInput.cs" />
     <Compile Include="Assets\TrumpRoom.cs" />
     <Compile Include="Assets\TrumpTower.cs" />

@@ -4,7 +4,7 @@ using UnityEngine;
 
 public class TrumpRoom : MonoBehaviour
 {
-    private string m_selectionText;
+    private string m_selectionText = "";
 
     [SerializeField]
     private GameObject m_nextRoomSlot;
@@ -24,6 +24,20 @@ public class TrumpRoom : MonoBehaviour
     [SerializeField]
     private TextMesh m_visitorText;
 
+    [SerializeField]
+    private GameObject m_visitorSlot;
+
+    [SerializeField]
+    private GameObject m_residentSlot;
+
+    [SerializeField]
+    private GameObject m_elevatorSlot;
+
+    [SerializeField]
+    public GameObject mp_chatBubble;
+
+    static TrumpRoom ms_instance;
+
 
     public Character CurrentResident
     {
@@ -41,8 +55,34 @@ public class TrumpRoom : MonoBehaviour
         }
     }
 
+    public Vector3 GetElevatorPosition()
+    {
+        return m_elevatorSlot.transform.position;
+    }
+
+    public void Select()
+    {
+        m_selectionText = "";
+        m_text.text = m_selectionText;
+    }
+
+    public void Awake()
+    {
+        ms_instance = this;
+    }
+
+    public static GameObject GetGameObjectChatBubble()
+    {
+        return ms_instance.mp_chatBubble;
+    }
+
     public void MakeSelectable()
     {
+        if(m_selectionText != "")
+        {
+            return;
+        }
+
         m_selectionText = Dictionary.ms_instance.PickWord(TrumpTower.ms_instance.GetDifficulty());
         m_text.text = m_selectionText;
     }
@@ -62,12 +102,15 @@ public class TrumpRoom : MonoBehaviour
     {
         m_currentResident = resident;
 
+
         if (resident == null)
         {
             m_residentText.text = "vacant";
         }
         else
         {
+            resident.transform.position = m_residentSlot.transform.position;
+            resident.transform.SetParent(this.transform);
             m_residentText.text = resident.Name;
 
         }
@@ -75,14 +118,18 @@ public class TrumpRoom : MonoBehaviour
 
     public void SetVisitor(Character visitor)
     {
-        m_currentVisitor = visitor;
         if (visitor == null)
         {
             m_visitorText.text = "vacant";
         }
-        else {
+        else
+        {
+            visitor.transform.SetParent(this.transform);
+            visitor.transform.position = m_visitorSlot.transform.position;
             m_visitorText.text = visitor.Name;
         }
+
+        m_currentVisitor = visitor;
     }
 
     public string GetWord()
@@ -90,28 +137,60 @@ public class TrumpRoom : MonoBehaviour
         return m_selectionText;
     }
 
+    private float m_minChatBubbleSpawnTime = 1.0f;
+    private float m_maxChatBubbleSpawnTime = 3.0f;
+
     private IEnumerator MeetingRoutine()
     {
         m_currentVisitor.InMeeting = true;
         m_currentResident.InMeeting = true;
 
-        yield return new WaitForSeconds(m_meetingTime);
+        float t = 0.0f;
 
+        while (t < m_meetingTime)
+        {
+            float m_waitTime = Random.Range(m_minChatBubbleSpawnTime, m_maxChatBubbleSpawnTime);
+
+            if (Random.Range(0, 10) <= 5)
+            {
+                GameObject.Instantiate(this.mp_chatBubble, m_residentSlot.transform.position + new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), 0), transform.rotation, m_residentSlot.transform);
+
+            }
+            else
+            {
+                GameObject.Instantiate(this.mp_chatBubble, m_visitorSlot.transform.position + new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), 0), transform.rotation, m_visitorSlot.transform);
+            }
+            yield return new WaitForSeconds(m_waitTime);
+            t += m_waitTime;
+        }
+        
         m_currentVisitor.InMeeting = false;
         m_currentResident.InMeeting = false;
-
-        TrumpTower.ms_instance.ExitMeeting(this);
-
     }
 
-    public void CheckForMeeting()
+    public float CheckForMeeting()
     {
-        if ((m_currentResident != null && m_currentVisitor != null) && ((m_currentResident.GetAppointments().Contains(m_currentVisitor) || m_currentVisitor.GetAppointments().Contains(m_currentResident))))
+        if (m_currentVisitor == null || m_currentResident == null)
         {
-            m_currentResident.MeetWith(m_currentResident);
-            m_currentResident.MeetWith(m_currentVisitor);
-            StartCoroutine(MeetingRoutine());
+            return 0;
         }
+
+        if (m_currentResident.InMeeting || m_currentVisitor.InMeeting)
+        {
+            return 0;
+        }
+
+        if (m_currentResident.GetAppointments().Contains(m_currentVisitor) || m_currentVisitor.GetAppointments().Contains(m_currentResident))
+        {
+
+
+            m_currentResident.MeetWith(m_currentVisitor);
+            m_currentVisitor.MeetWith(m_currentResident);
+            StartCoroutine(MeetingRoutine());
+            return m_currentVisitor.GetHappinessPoints() + m_currentResident.GetHappinessPoints();
+        }
+
+        return 0.0f;
     }
 
     public void Update()

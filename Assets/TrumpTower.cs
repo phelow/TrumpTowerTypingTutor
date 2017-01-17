@@ -1,6 +1,7 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.UI;
 using System.Linq;
 
 public class TrumpTower : MonoBehaviour
@@ -9,6 +10,8 @@ public class TrumpTower : MonoBehaviour
 
     private int m_numRooms = 1;
     private int m_numCharacters = 1;
+    private int m_level = 0;
+    private float m_score = 0.0f;
 
     private int m_difficulty = 0;
 
@@ -18,7 +21,7 @@ public class TrumpTower : MonoBehaviour
     [SerializeField]
     private TrumpRoom m_lastRoomAdded;
 
-    private Stack<Character> m_characterBase;
+    private Stack<Character> m_newCharacterQueue;
 
     public List<TrumpRoom> m_rooms;
 
@@ -27,59 +30,95 @@ public class TrumpTower : MonoBehaviour
     private Character m_elevatorCharacter = null;
 
     [SerializeField]
+    private List<Character> m_characterPool;
+    
+    [SerializeField]
+    private GameObject m_elevator;
+
+    [SerializeField]
     private TextMesh m_elevatorText;
-    private bool m_waitingForSelection = false;
+
+    [SerializeField]
+    private CanvasGroup m_intermissionCanvas;
+
+    [SerializeField]
+    private Text m_intermissionYourScore;
+    [SerializeField]
+    private Text m_intermissionHighScore;
+    [SerializeField]
+    private Text m_levelText;
+
+    [SerializeField]
+    private Text m_doAnythingToContinue;
+
+    [SerializeField]
+    private TextMesh m_scoreText;
+
+    [SerializeField]
+    private Text m_message;
+    bool selectionMade = false;
+
+    public IEnumerator GameOverRoutine()
+    {
+        m_message.text = "Game Over";
+        yield return EndLevel();
+    }
+
+    public bool IsCharacterInElevator(Character character)
+    {
+        return character == m_elevatorCharacter;
+    }
 
     private void SetElevatorCharacter(Character elevatorCharacter)
     {
-        m_elevatorCharacter = elevatorCharacter;
-
-        if (m_elevatorCharacter == null)
+        if (elevatorCharacter == null)
         {
             m_elevatorText.text = "empty";
+
+            m_elevatorCharacter = elevatorCharacter;
         }
         else
         {
+            elevatorCharacter.transform.position = m_elevator.transform.position;
+            elevatorCharacter.transform.SetParent(m_elevator.transform);
+
+            m_elevatorCharacter = elevatorCharacter;
             m_elevatorText.text = elevatorCharacter.Name;
 
         }
+
     }
 
-    bool selectionMade = false;
     private void PopulateCharacterDatabase()
     {
         m_rooms = new List<TrumpRoom>();
         m_activeCharacters = new List<Character>();
-        m_characterBase = new Stack<Character>();
-        m_characterBase.Push(new Character("Trump"));
-        m_characterBase.Push(new Character("Putin"));
-        m_characterBase.Push(new Character("Pence"));
-        m_characterBase.Push(new Character("Carson"));
-        m_characterBase.Push(new Character("Bannon"));
-        m_characterBase.Push(new Character("Perry"));
-        m_characterBase.Push(new Character("Price"));
-        m_characterBase.Push(new Character("Mattis"));
-        m_characterBase.Push(new Character("Zinke"));
-        m_characterBase.Push(new Character("Tillerson"));
-        m_characterBase.Push(new Character("Mnuchin"));
-        m_characterBase.Push(new Character("Sessions"));
-        m_characterBase.Push(new Character("Ross"));
-        m_characterBase.Push(new Character("Puzder"));
-        m_characterBase.Push(new Character("Price"));
-        m_activeCharacters.Add(m_characterBase.Pop());
-        m_activeCharacters.Add(m_characterBase.Pop());
+        m_newCharacterQueue = new Stack<Character>();
+
+        m_characterPool.Reverse();
+
+        foreach(Character character in m_characterPool)
+        {
+            m_newCharacterQueue.Push(character);
+        }
+
+
+        m_activeCharacters.Add(m_newCharacterQueue.Pop());
+        m_activeCharacters.Add(m_newCharacterQueue.Pop());
         m_lastRoomAdded.SetResident(m_activeCharacters[0]);
         m_lastRoomAdded.SetVisitor(m_activeCharacters[1]);
 
         m_rooms.Add(m_lastRoomAdded);
-        AddARoom();
     }
 
+    void Awake()
+    {
+        ms_instance = this;
+    }
 
     // Use this for initialization
     void Start()
     {
-        ms_instance = this;
         PopulateCharacterDatabase();
 
         StartCoroutine(GameLoop());
@@ -87,34 +126,91 @@ public class TrumpTower : MonoBehaviour
 
     private IEnumerator GameLoop()
     {
+        AddARoom();
         while (true)
         {
-
-            AddARoom();
+            MakeHarder();
             m_difficulty++;
             yield return new WaitForEndOfFrame();
             yield return PlayLevel();
+            yield return EndLevel();
         }
+    }
+
+    private IEnumerator EndLevel()
+    {
+        m_intermissionHighScore.text = "" + PlayerPrefs.GetFloat("HighScore", 0.0f);
+
+        foreach (Character c in m_activeCharacters)
+        {
+            c.ResetAnger();
+        }
+
+        ClearAllRooms();
+
+        m_levelText.text = "Level " + m_level + " completed!";
+        m_intermissionYourScore.text = "Your score: " + m_score;
+
+        if (m_score > PlayerPrefs.GetFloat("HighScore", 0.0f))
+        {
+            PlayerPrefs.SetFloat("HighScore", m_score);
+        }
+
+        float t = 0.0f;
+
+        while(t < 1.0f)
+        {
+            t += Time.deltaTime;
+            m_intermissionCanvas.alpha = t;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        while (!Input.anyKey)
+        {
+            yield return new WaitForEndOfFrame();
+        }
+
+        t = 1.0f;
+
+        while (t > 0.0f)
+        {
+            t -= Time.deltaTime;
+            m_intermissionCanvas.alpha = t;
+
+            yield return new WaitForEndOfFrame();
+        }
+
+        foreach (Character c in m_activeCharacters)
+        {
+            c.ResetAnger();
+        }
+
     }
 
     public void Select(TrumpRoom room)
     {
+        m_elevator.transform.position = room.GetElevatorPosition();
+
+        room.Select();
+        ClearAllRooms();
+
         if (m_elevatorCharacter != null)
         {
             if (room.CurrentResident == null)
             {
                 room.SetResident(m_elevatorCharacter);
-                SetElevatorCharacter(null);
             }
             else if (room.CurrentVisitor == null)
             {
                 room.SetVisitor(m_elevatorCharacter);
-                SetElevatorCharacter(null);
             }
             else
             {
                 Debug.LogError("Hotel overcrowding error");
             }
+            SetElevatorCharacter(null);
+
 
             CheckForAnyMeetings();
 
@@ -123,11 +219,6 @@ public class TrumpTower : MonoBehaviour
         }
         else
         {
-            if(m_elevatorCharacter != null)
-            {
-                Debug.LogError("No one is in the elevator");
-            }
-
             if(room.CurrentVisitor != null)
             {
                 SetElevatorCharacter(room.CurrentVisitor);
@@ -147,7 +238,7 @@ public class TrumpTower : MonoBehaviour
     {
         foreach (TrumpRoom room in m_rooms)
         {
-            if (room.GetWord() == testWord)
+            if (room.GetWord() == testWord && testWord != "")
             {
                 Select(room);
                 return true;
@@ -174,7 +265,8 @@ public class TrumpTower : MonoBehaviour
     {
         foreach (TrumpRoom room in m_rooms)
         {
-            room.CheckForMeeting();
+            m_score += room.CheckForMeeting();
+            m_scoreText.text = "Score:" + m_score;
         }
     }
 
@@ -186,20 +278,19 @@ public class TrumpTower : MonoBehaviour
             character.GenerateAgenda(m_activeCharacters.Where(x => x != character).ToList());
         }
 
-        CheckForAnyMeetings();
-
-        if (m_elevatorCharacter == null)
-        {
-            PickupAccessRooms();
-        }
-        else
-        {
-            DropoffAccessRooms();
-        }
-
         while (LevelInProgress())
         {
-            yield return WaitForSelection();
+            CheckForAnyMeetings();
+
+            if (m_elevatorCharacter == null)
+            {
+                PickupAccessRooms();
+            }
+            else
+            {
+                DropoffAccessRooms();
+            }
+            yield return new WaitForEndOfFrame();
         }
 
     }
@@ -214,8 +305,6 @@ public class TrumpTower : MonoBehaviour
 
     private void DropoffAccessRooms()
     {
-        ClearAllRooms();
-
         foreach (TrumpRoom room in m_rooms.Where(x => x.CurrentVisitor == null && x.CurrentResident == null || (m_elevatorCharacter.GetAppointments().Contains(x.CurrentResident) && x.CurrentVisitor == null)))
         {
             if (room.CurrentResident != null)
@@ -227,13 +316,10 @@ public class TrumpTower : MonoBehaviour
                 room.MakeSelectable();
             }
         }
-        m_waitingForSelection = true;
     }    
 
     private void PickupAccessRooms()
     {
-        ClearAllRooms();
-
         foreach (TrumpRoom room in m_rooms)
         {
             //TODO: don't pick people up if they're in a meeting
@@ -246,16 +332,6 @@ public class TrumpTower : MonoBehaviour
             {
                 room.MakeSelectable();
             }
-        }
-        m_waitingForSelection = false;
-    }
-
-    private IEnumerator WaitForSelection()
-    {
-        selectionMade = false;
-        while (selectionMade == false)
-        {
-            yield return new WaitForEndOfFrame();
         }
     }
 
@@ -276,14 +352,6 @@ public class TrumpTower : MonoBehaviour
         return false;
     }
 
-    public void ExitMeeting(TrumpRoom room)
-    {
-        if (m_waitingForSelection)
-        {
-            room.MakeSelectable();
-        }
-    }
-
     public int GetDifficulty()
     {
         return m_difficulty;
@@ -291,21 +359,26 @@ public class TrumpTower : MonoBehaviour
 
     private void AddARoom()
     {
+        m_numRooms++;
+        m_lastRoomAdded = GameObject.Instantiate(mp_room, m_lastRoomAdded.GetNextRoomSpawnPoint().transform.position, m_lastRoomAdded.GetNextRoomSpawnPoint().transform.rotation, transform).GetComponent<TrumpRoom>();
+        m_rooms.Add(m_lastRoomAdded);
+    }
+
+    private void MakeHarder()
+    {
         //TODO: only add a room when over capacity
 
         if (m_numRooms < 9)
         {
-            m_numRooms++;
-            m_lastRoomAdded = GameObject.Instantiate(mp_room, m_lastRoomAdded.GetNextRoomSpawnPoint().transform.position, m_lastRoomAdded.GetNextRoomSpawnPoint().transform.rotation, transform).GetComponent<TrumpRoom>();
-            m_rooms.Add(m_lastRoomAdded);
+            AddARoom();
         }
         //TODO: pick a unused character at random.
 
 
-        if (m_numCharacters < 14)
+        if (m_numCharacters < 12)
         {
             //Add a new room
-            Character newCharacter = m_characterBase.Pop();
+            Character newCharacter = m_newCharacterQueue.Pop();
             m_numCharacters++;
             m_activeCharacters.Add(newCharacter);
 
