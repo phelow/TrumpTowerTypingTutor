@@ -55,7 +55,9 @@ MonoBehaviour:
   m_name: Carson
   mp_itineraryBackdrop: {fileID: 1966863918216092, guid: a363d43d5f23481498ece7170c6c5682,
     type: 2}
+  mp_chatBubble: {fileID: 0}
   mp_icon: {fileID: 1740038464643834, guid: 7fdf1dcbcc80aea43a2f0d9b84d9f1b3, type: 2}
+  m_spriteRenderer: {fileID: 212267397074630798}
   InMeeting: 0
 --- !u!212 &212267397074630798
 SpriteRenderer:

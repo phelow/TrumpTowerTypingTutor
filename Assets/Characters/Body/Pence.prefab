@@ -55,7 +55,9 @@ MonoBehaviour:
   m_name: Pence
   mp_itineraryBackdrop: {fileID: 1966863918216092, guid: a363d43d5f23481498ece7170c6c5682,
     type: 2}
+  mp_chatBubble: {fileID: 0}
   mp_icon: {fileID: 1804870803250310, guid: 32416031a4aea8c438de1be06f9c684c, type: 2}
+  m_spriteRenderer: {fileID: 212850929707708540}
   InMeeting: 0
 --- !u!212 &212850929707708540
 SpriteRenderer:

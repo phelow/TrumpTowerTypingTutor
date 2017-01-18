@@ -55,7 +55,9 @@ MonoBehaviour:
   m_name: Obama
   mp_itineraryBackdrop: {fileID: 1966863918216092, guid: a363d43d5f23481498ece7170c6c5682,
     type: 2}
+  mp_chatBubble: {fileID: 0}
   mp_icon: {fileID: 1894267691871194, guid: ebff76999186a0e448a43915681bc324, type: 2}
+  m_spriteRenderer: {fileID: 212314686162901444}
   InMeeting: 0
 --- !u!212 &212314686162901444
 SpriteRenderer:

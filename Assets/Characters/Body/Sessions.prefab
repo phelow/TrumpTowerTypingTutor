@@ -55,7 +55,9 @@ MonoBehaviour:
   m_name: Sessions
   mp_itineraryBackdrop: {fileID: 1966863918216092, guid: a363d43d5f23481498ece7170c6c5682,
     type: 2}
+  mp_chatBubble: {fileID: 0}
   mp_icon: {fileID: 1819052111044522, guid: 0f76dd74633b06e428e13adf2e5dcce9, type: 2}
+  m_spriteRenderer: {fileID: 212901948379654698}
   InMeeting: 0
 --- !u!212 &212901948379654698
 SpriteRenderer:

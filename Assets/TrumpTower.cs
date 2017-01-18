@@ -58,11 +58,17 @@ public class TrumpTower : MonoBehaviour
     private Text m_message;
     bool selectionMade = false;
 
+    bool m_gameOverStarted = false;
+
     public IEnumerator GameOverRoutine()
     {
-        m_message.text = "Game Over";
-        yield return EndLevel();
-        Fader.Instance.FadeIn(1.0f).LoadLevel(1);
+        if (m_gameOverStarted == false)
+        {
+            m_gameOverStarted = true;
+            m_message.text = "Game Over";
+            yield return EndLevel();
+            Fader.Instance.FadeIn(1.0f).LoadLevel(1);
+        }
     }
 
     public bool IsCharacterInElevator(Character character)
@@ -106,6 +112,10 @@ public class TrumpTower : MonoBehaviour
 
         m_activeCharacters.Add(m_newCharacterQueue.Pop());
         m_activeCharacters.Add(m_newCharacterQueue.Pop());
+
+        m_activeCharacters[0].StartCoroutine(m_activeCharacters[0].FadeInFadeOut());
+        m_activeCharacters[1].StartCoroutine(m_activeCharacters[1].FadeInFadeOut());
+
         m_lastRoomAdded.SetResident(m_activeCharacters[0]);
         m_lastRoomAdded.SetVisitor(m_activeCharacters[1]);
 
@@ -149,7 +159,7 @@ public class TrumpTower : MonoBehaviour
 
         ClearAllRooms();
 
-        m_levelText.text = "Level " + m_level++ + " completed!";
+        m_levelText.text = "Level " + m_level++;
         m_intermissionYourScore.text = "Your score: " + m_score;
 
         if (m_score > PlayerPrefs.GetFloat("HighScore", 0.0f))
@@ -307,9 +317,9 @@ public class TrumpTower : MonoBehaviour
 
     private void DropoffAccessRooms()
     {
-        foreach (TrumpRoom room in m_rooms.Where(x => x.CurrentVisitor == null && x.CurrentResident == null || (m_elevatorCharacter.GetAppointments().Contains(x.CurrentResident) && x.CurrentVisitor == null)))
+        foreach (TrumpRoom room in m_rooms.Where(x => x.CurrentVisitor == null))
         {
-            if (room.CurrentResident != null)
+            if (room.CurrentResident != null && (room.CurrentResident.GetAppointments().Contains(m_elevatorCharacter) || m_elevatorCharacter.GetAppointments().Contains(room.CurrentResident)))
             {
                 room.MakeSelectable();
             }
@@ -390,6 +400,7 @@ public class TrumpTower : MonoBehaviour
         {
             //Add a new room
             Character newCharacter = m_newCharacterQueue.Pop();
+            newCharacter.StartCoroutine(newCharacter.FadeInFadeOut());
             m_numCharacters++;
             m_activeCharacters.Add(newCharacter);
 

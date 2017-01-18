@@ -8,7 +8,7 @@ public class HighScore : MonoBehaviour {
     private Text m_text;
 	// Use this for initialization
 	void Start () {
-        m_text.text = "Huge Score:" + PlayerPrefs.GetInt("HighScore", 0);
+        m_text.text = "Huge Score:" + PlayerPrefs.GetFloat("HighScore", 0);
 	}
 	
 	// Update is called once per frame

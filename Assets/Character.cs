@@ -25,6 +25,9 @@ public class Character : MonoBehaviour
     [SerializeField]
     private GameObject mp_icon;
 
+    [SerializeField]
+    private SpriteRenderer m_spriteRenderer;
+
     private List<Character> m_agenda;
 
     public bool InMeeting;
@@ -64,6 +67,31 @@ public class Character : MonoBehaviour
         m_angerSeconds = 0.0f;
     }
 
+    public IEnumerator FadeInFadeOut()
+    {
+        float t = 0.0f;
+        Color original = m_spriteRenderer.color;
+        t = 0.0f;
+        while (t < 1.0f)
+        {
+            t += Time.deltaTime;
+            m_spriteRenderer.color = Color.Lerp(Color.clear, original, t);
+            yield return new WaitForEndOfFrame();
+        }
+    }
+
+    public bool CanMeet()
+    {
+        foreach (Character character in m_agenda)
+        {
+            if (character.InMeeting == false)
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     private IEnumerator GetAngry()
     {
         while (TrumpTower.ms_instance == null)
@@ -72,37 +100,49 @@ public class Character : MonoBehaviour
         }
 
         ResetAnger();
-        while (m_angerSeconds < m_maxAnger && m_agenda.Count > 0)
+        while (m_angerSeconds < m_maxAnger)
         {
-            if (InMeeting == false && !TrumpTower.ms_instance.IsCharacterInElevator(this))
+            while (m_agenda.Count == 0)
             {
-
-                m_angerSeconds += 1.0f;
-
+                m_angerSeconds = 0.0f;
+                m_itineraryBubble.SetFade(0.0f);
+                yield return new WaitForEndOfFrame();
             }
-            else
+            float t = 0.0f;
+            while (t < 1.0f)
             {
-                m_angerSeconds -= 1.0f;
-                if (m_angerSeconds < 0.0f)
+                t += Time.deltaTime;
+                m_itineraryBubble.SetFade(t);
+                yield return new WaitForEndOfFrame();
+            }
+            while (m_agenda.Count > 0 && m_angerSeconds < m_maxAnger)
+            {
+                if (InMeeting == false && !TrumpTower.ms_instance.IsCharacterInElevator(this) && CanMeet())
                 {
-                    m_angerSeconds = 0.0f;
+                    m_angerSeconds += 1.0f;
                 }
-            }
-            m_itineraryBubble.SetAnger(m_angerSeconds / m_maxAnger);
-            yield return new WaitForSeconds(1.0f);
-        }
+                else
+                {
+                    m_angerSeconds -= 1.0f;
+                    if (m_angerSeconds < 0.0f)
+                    {
+                        m_angerSeconds = 0.0f;
+                    }
+                }
 
-        if (m_agenda.Count == 0)
-        {
-            float t = 1.0f;
+                if (m_agenda.Count > 0)
+                {
+                    m_itineraryBubble.SetAnger(m_angerSeconds / m_maxAnger);
+                }
+                yield return new WaitForSeconds(1.0f);
+            }
+            t = 1.0f;
             while (t > 0.0f)
             {
                 t -= Time.deltaTime;
-                yield return new WaitForEndOfFrame();
                 m_itineraryBubble.SetFade(t);
+                yield return new WaitForEndOfFrame();
             }
-            yield break;
-
         }
 
         float fadeTime = .2f;
@@ -120,7 +160,6 @@ public class Character : MonoBehaviour
     {
         if (characterPool == null)
         {
-
             return m_agenda.Count > 0;
 
         }

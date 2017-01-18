@@ -35,7 +35,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1874344240106436}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 5.33, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
@@ -55,7 +55,9 @@ MonoBehaviour:
   m_name: Putin
   mp_itineraryBackdrop: {fileID: 1966863918216092, guid: a363d43d5f23481498ece7170c6c5682,
     type: 2}
+  mp_chatBubble: {fileID: 0}
   mp_icon: {fileID: 1173216772982210, guid: a824dcde9a1211f42bfe41fb8f188d39, type: 2}
+  m_spriteRenderer: {fileID: 212056191707130534}
   InMeeting: 0
 --- !u!212 &212056191707130534
 SpriteRenderer:

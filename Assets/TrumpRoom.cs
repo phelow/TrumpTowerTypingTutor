@@ -72,6 +72,7 @@ public class TrumpRoom : MonoBehaviour
     public void Awake()
     {
         ms_instance = this;
+        StartCoroutine(TellToPressSpace());
     }
 
     public static GameObject GetGameObjectChatBubble()
@@ -174,6 +175,45 @@ public class TrumpRoom : MonoBehaviour
 
         m_currentVisitor.InMeeting = false;
         m_currentResident.InMeeting = false;
+    }
+
+    private IEnumerator TellToPressSpace()
+    {
+        float spaceWaitingTime = 0.0f;
+        while (true)
+        {
+
+            if (m_overText.text.Length == m_selectionText.Length && m_selectionText != "")
+            {
+                spaceWaitingTime += Time.deltaTime;
+            }
+            else
+            {
+                spaceWaitingTime = 0.0f;
+            }
+
+            if(spaceWaitingTime > 3.0f)
+            {
+                if (m_selectionText.Length <= 4)
+                {
+
+                    m_overText.text += " [PRESS SPACE]";
+                }
+                else if (m_selectionText.Length <= 9)
+                {
+
+
+                    m_overText.text += " [SPACE]";
+                }
+                else
+                {
+                    m_overText.text += " [ ]";
+                }
+            }
+
+            yield return new WaitForEndOfFrame();
+
+        }
     }
 
     public void CheckForSubstring(string currentText)

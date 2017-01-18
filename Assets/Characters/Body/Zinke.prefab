@@ -55,7 +55,9 @@ MonoBehaviour:
   m_name: Zinke
   mp_itineraryBackdrop: {fileID: 1966863918216092, guid: a363d43d5f23481498ece7170c6c5682,
     type: 2}
+  mp_chatBubble: {fileID: 0}
   mp_icon: {fileID: 1429876795142226, guid: 1095c41736eec6e4891eec989fef2054, type: 2}
+  m_spriteRenderer: {fileID: 212639167804926114}
   InMeeting: 0
 --- !u!212 &212639167804926114
 SpriteRenderer:

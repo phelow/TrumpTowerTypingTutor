@@ -55,7 +55,9 @@ MonoBehaviour:
   m_name: Bannon
   mp_itineraryBackdrop: {fileID: 1966863918216092, guid: a363d43d5f23481498ece7170c6c5682,
     type: 2}
+  mp_chatBubble: {fileID: 0}
   mp_icon: {fileID: 1060222971331820, guid: 8d8385a852da24745802481cd9828a65, type: 2}
+  m_spriteRenderer: {fileID: 212176795498324140}
   InMeeting: 0
 --- !u!212 &212176795498324140
 SpriteRenderer:

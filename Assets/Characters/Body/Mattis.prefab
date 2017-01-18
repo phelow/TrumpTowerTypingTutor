@@ -55,7 +55,9 @@ MonoBehaviour:
   m_name: Mattis
   mp_itineraryBackdrop: {fileID: 1966863918216092, guid: a363d43d5f23481498ece7170c6c5682,
     type: 2}
+  mp_chatBubble: {fileID: 0}
   mp_icon: {fileID: 1723739255358438, guid: 399409c69af46e84a82e97350b9da2bf, type: 2}
+  m_spriteRenderer: {fileID: 212083038387279868}
   InMeeting: 0
 --- !u!212 &212083038387279868
 SpriteRenderer:
