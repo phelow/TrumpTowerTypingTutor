@@ -39,7 +39,20 @@ public class TrumpRoom : MonoBehaviour
     [SerializeField]
     public TextMesh m_overText;
 
+    [SerializeField]
+    private GameObject mp_textBlock;
+
+    [SerializeField]
+    private GameObject m_firstLetterSlot;
+
+    [SerializeField]
+    private GameObject m_nextLetterSlot;
+
+    private List<SeekPosition> m_letterBlocks;
+
     static TrumpRoom ms_instance;
+
+    private string m_lastText = "";
 
 
     public Character CurrentResident
@@ -65,13 +78,15 @@ public class TrumpRoom : MonoBehaviour
 
     public void Select()
     {
-        m_selectionText = "";
-        m_text.text = m_selectionText;
+        SetText("");
+        
     }
 
     public void Awake()
     {
         ms_instance = this;
+        m_nextLetterSlot = m_firstLetterSlot;
+        m_letterBlocks = new List<SeekPosition>();
         StartCoroutine(TellToPressSpace());
     }
 
@@ -87,14 +102,47 @@ public class TrumpRoom : MonoBehaviour
             return;
         }
 
-        m_selectionText = Dictionary.ms_instance.PickWord(TrumpTower.ms_instance.GetDifficulty());
-        m_text.text = m_selectionText;
+        SetText(Dictionary.ms_instance.PickWord(TrumpTower.ms_instance.GetDifficulty()));
     }
 
     public void MakeUnselectable()
     {
-        m_selectionText = "";
-        m_text.text = m_selectionText;
+        SetText("");
+    }
+
+    public void SetText(string text)
+    {
+        m_selectionText = text;
+        StartCoroutine(CreateText(text));
+    }
+
+    private IEnumerator CreateText(string text)
+    {
+        m_nextLetterSlot = m_firstLetterSlot;
+        foreach(SeekPosition letter in m_letterBlocks)
+        {
+            letter.StartCoroutine(letter.End());
+        }
+
+        m_letterBlocks = new List<SeekPosition>();
+
+        foreach (char character in text)
+        {
+            yield return MakeLetter(character);
+        }
+    }
+
+    private IEnumerator MakeLetter(char character)
+    {
+        //TODO: spawn block off screen
+
+        SeekPosition letter = GameObject.Instantiate(mp_textBlock, m_nextLetterSlot.transform.position, m_firstLetterSlot.transform.rotation, null).GetComponent<SeekPosition>();
+        m_letterBlocks.Add(letter);
+        //set it's target
+        letter.SetLetter(character);
+        letter.SetTarget(m_nextLetterSlot);
+        yield return StartCoroutine(letter.Unselect());
+        m_nextLetterSlot = letter.GetNextSlot();
     }
 
     public GameObject GetNextRoomSpawnPoint()
@@ -218,10 +266,24 @@ public class TrumpRoom : MonoBehaviour
 
     public void CheckForSubstring(string currentText)
     {
-        m_overText.text = "";
+        m_overText.text = ""; //TODO: remove
         if (currentText.Length <= m_selectionText.Length && m_selectionText.Substring(0, currentText.Length) == currentText)
         {
-            m_overText.text = currentText;
+            for (int i = 0; i <= currentText.Length - 1; i++)
+            {
+                m_letterBlocks[i].StartCoroutine(m_letterBlocks[i].Select());
+            }
+
+            if (currentText.Length < m_lastText.Length)
+            {
+
+                for (int i = currentText.Length; i < m_selectionText.Length; i++)
+                {
+                    m_letterBlocks[i].StartCoroutine(m_letterBlocks[i].Unselect());
+                }
+            }
+
+            m_lastText = currentText;
         }
 
     }
@@ -240,8 +302,6 @@ public class TrumpRoom : MonoBehaviour
 
         if (m_currentResident.GetAppointments().Contains(m_currentVisitor) || m_currentVisitor.GetAppointments().Contains(m_currentResident))
         {
-
-
             m_currentResident.MeetWith(m_currentVisitor);
             m_currentVisitor.MeetWith(m_currentResident);
             StartCoroutine(MeetingRoutine());
@@ -249,9 +309,5 @@ public class TrumpRoom : MonoBehaviour
         }
 
         return 0.0f;
-    }
-
-    public void Update()
-    {
     }
 }

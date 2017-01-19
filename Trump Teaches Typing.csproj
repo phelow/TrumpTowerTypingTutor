@@ -99,6 +99,7 @@
     <Compile Include="Assets\Screen Fader Pack\Demo\Demo - Stripes\DemoStripesGUI.cs" />
     <Compile Include="Assets\Screen Fader Pack\Demo\Other stuff\RotatableObject.cs" />
     <Compile Include="Assets\Screen Fader Pack\Demo\Other stuff\SwitchScenesGUI.cs" />
+    <Compile Include="Assets\SeekPosition.cs" />
     <Compile Include="Assets\SetLayer.cs" />
     <Compile Include="Assets\TrumpRoom.cs" />
     <Compile Include="Assets\TrumpTower.cs" />
