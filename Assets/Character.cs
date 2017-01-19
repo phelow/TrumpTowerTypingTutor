@@ -20,7 +20,7 @@ public class Character : MonoBehaviour
 
     private float m_angerSeconds = 0.0f;
 
-    private float m_maxAnger = 30.0f;
+    private float m_maxAnger = 60.0f;
 
     [SerializeField]
     private GameObject mp_icon;

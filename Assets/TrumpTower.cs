@@ -31,7 +31,7 @@ public class TrumpTower : MonoBehaviour
 
     [SerializeField]
     private List<Character> m_characterPool;
-    
+
     [SerializeField]
     private GameObject m_elevator;
 
@@ -113,7 +113,7 @@ public class TrumpTower : MonoBehaviour
 
         m_characterPool.Reverse();
 
-        foreach(Character character in m_characterPool)
+        foreach (Character character in m_characterPool)
         {
             m_newCharacterQueue.Push(character);
         }
@@ -178,7 +178,7 @@ public class TrumpTower : MonoBehaviour
 
         float t = 0.0f;
 
-        while(t < 1.0f)
+        while (t < 1.0f)
         {
             t += Time.deltaTime;
             m_intermissionCanvas.alpha = t;
@@ -217,33 +217,49 @@ public class TrumpTower : MonoBehaviour
 
         if (m_elevatorCharacter != null)
         {
-            if (room.CurrentResident == null)
+            if (room.CurrentResident != null &&(room.CurrentResident.GetAppointments().Contains(m_elevatorCharacter) || m_elevatorCharacter.GetAppointments().Contains(room.CurrentResident)))
             {
-                room.SetResident(m_elevatorCharacter);
-            }
-            else if (room.CurrentVisitor == null)
-            {
+                Character temp = room.CurrentVisitor;
                 room.SetVisitor(m_elevatorCharacter);
+                SetElevatorCharacter(temp);
             }
-            else
+            else if (room.CurrentVisitor != null && (room.CurrentVisitor.GetAppointments().Contains(m_elevatorCharacter) || m_elevatorCharacter.GetAppointments().Contains(room.CurrentVisitor)))
             {
-                Debug.LogError("Hotel overcrowding error");
+                Character temp = room.CurrentResident;
+                room.SetResident(m_elevatorCharacter);
+                SetElevatorCharacter(temp);
+
             }
-            SetElevatorCharacter(null);
+            else if (room.CurrentVisitor != null && room.CurrentVisitor.HasAppointment())
+            {
+
+                Character temp = room.CurrentVisitor;
+                room.SetVisitor(m_elevatorCharacter);
+                SetElevatorCharacter(temp);
+
+            }
+            else if (room.CurrentResident !=null && room.CurrentResident.HasAppointment())
+            {
+                Character temp = room.CurrentResident;
+                room.SetResident(m_elevatorCharacter);
+                SetElevatorCharacter(temp);
+
+            }
 
 
             CheckForAnyMeetings();
 
             //TODO: fill the hotel with words to select rooms to pick people up from
-            PickupAccessRooms();
+            DropoffAccessRooms();
         }
         else
         {
-            if(room.CurrentVisitor != null)
+            if (room.CurrentVisitor != null && room.CurrentVisitor.InMeeting == false)
             {
                 SetElevatorCharacter(room.CurrentVisitor);
                 room.SetVisitor(null);
-            }else if(room.CurrentResident != null)
+            }
+            else if (room.CurrentResident != null && room.CurrentResident.InMeeting == false)
             {
                 SetElevatorCharacter(room.CurrentResident);
                 room.SetResident(null);
@@ -303,14 +319,7 @@ public class TrumpTower : MonoBehaviour
         {
             CheckForAnyMeetings();
 
-            if (m_elevatorCharacter == null)
-            {
-                PickupAccessRooms();
-            }
-            else
-            {
-                DropoffAccessRooms();
-            }
+            DropoffAccessRooms();
             yield return new WaitForEndOfFrame();
         }
 
@@ -318,7 +327,7 @@ public class TrumpTower : MonoBehaviour
 
     private void ClearAllRooms()
     {
-        foreach(TrumpRoom room in m_rooms)
+        foreach (TrumpRoom room in m_rooms)
         {
             room.MakeUnselectable();
         }
@@ -326,32 +335,20 @@ public class TrumpTower : MonoBehaviour
 
     private void DropoffAccessRooms()
     {
-        foreach (TrumpRoom room in m_rooms.Where(x => x.CurrentVisitor == null))
-        {
-            if (room.CurrentResident != null && (room.CurrentResident.GetAppointments().Contains(m_elevatorCharacter) || m_elevatorCharacter.GetAppointments().Contains(room.CurrentResident)))
-            {
-                room.MakeSelectable();
-            }
-            else if (room.CurrentResident == null)
-            {
-                room.MakeSelectable();
-            }
-        }
-    }    
-
-    private void PickupAccessRooms()
-    {
         foreach (TrumpRoom room in m_rooms)
         {
-            //TODO: don't pick people up if they're in a meeting
-
-            if (room.CurrentVisitor != null && room.CurrentVisitor.InMeeting == false)
+            if (room.InAMeeting())
+            {
+                room.MakeUnselectable();
+            }
+            else if ((room.CurrentResident != null && room.CurrentResident.HasAppointment(m_activeCharacters)) ||
+               (room.CurrentVisitor != null && room.CurrentVisitor.HasAppointment(m_activeCharacters)))
             {
                 room.MakeSelectable();
             }
-            else if (room.CurrentResident != null && room.CurrentResident.HasAppointment(m_activeCharacters) && room.CurrentResident.InMeeting == false)
+            else
             {
-                room.MakeSelectable();
+                room.MakeUnselectable();
             }
         }
     }
@@ -366,16 +363,16 @@ public class TrumpTower : MonoBehaviour
 
     public bool ValidWord(string testWord)
     {
-        foreach(TrumpRoom room in m_rooms)
+        foreach (TrumpRoom room in m_rooms)
         {
             room.CheckForSubstring(testWord);
-            if(room.GetWord().Length < testWord.Length)
+            if (room.GetWord().Length < testWord.Length)
             {
                 continue;
             }
 
-            if(room.GetWord().Substring(0,testWord.Length) == testWord)
-            {                
+            if (room.GetWord().Substring(0, testWord.Length) == testWord)
+            {
                 return true;
             }
         }
@@ -392,7 +389,7 @@ public class TrumpTower : MonoBehaviour
         m_numRooms++;
         m_lastRoomAdded.SetElevatorShaftSprite(m_middleShaft);
         m_lastRoomAdded = GameObject.Instantiate(mp_room, m_lastRoomAdded.GetNextRoomSpawnPoint().transform.position, m_lastRoomAdded.GetNextRoomSpawnPoint().transform.rotation, transform).GetComponent<TrumpRoom>();
-        if(m_numRooms == 1)
+        if (m_numRooms == 1)
         {
             m_lastRoomAdded.SetElevatorShaftSprite(m_bottomShaft);
         }
@@ -427,13 +424,13 @@ public class TrumpTower : MonoBehaviour
 
             foreach (TrumpRoom room in m_rooms)
             {
-                if(room.CurrentResident == null)
+                if (room.CurrentResident == null)
                 {
                     room.SetResident(newCharacter);
                     return;
                 }
 
-                if(room.CurrentVisitor == null)
+                if (room.CurrentVisitor == null)
                 {
                     room.SetVisitor(newCharacter);
                     return;
