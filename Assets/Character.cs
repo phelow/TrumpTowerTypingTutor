@@ -28,6 +28,7 @@ public class Character : MonoBehaviour
     [SerializeField]
     private SpriteRenderer m_spriteRenderer;
 
+
     private List<Character> m_agenda;
 
     public bool InMeeting;
@@ -204,8 +205,8 @@ public class Character : MonoBehaviour
     {
         StartCoroutine(FadeInBubble());
         m_agenda = new List<Character>();
-        int totalAgenda = TrumpTower.ms_instance.GetDifficulty();
-        for (int i = 0; i < Mathf.Max(3, totalAgenda); i++)
+        int totalAgenda = Random.Range(2, Mathf.Max(2, TrumpTower.ms_instance.GetDifficulty()));
+        for (int i = 0; i < Mathf.Min(6, totalAgenda); i++)
         {
             m_agenda.Add(m_characterBase[Random.Range(0, m_characterBase.Count)]);
         }

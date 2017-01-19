@@ -55,6 +55,15 @@ public class TrumpTower : MonoBehaviour
     private TextMesh m_scoreText;
 
     [SerializeField]
+    private Sprite m_topShaft;
+
+    [SerializeField]
+    private Sprite m_middleShaft;
+
+    [SerializeField]
+    private Sprite m_bottomShaft;
+
+    [SerializeField]
     private Text m_message;
     bool selectionMade = false;
 
@@ -381,7 +390,19 @@ public class TrumpTower : MonoBehaviour
     private void AddARoom()
     {
         m_numRooms++;
+        m_lastRoomAdded.SetElevatorShaftSprite(m_middleShaft);
         m_lastRoomAdded = GameObject.Instantiate(mp_room, m_lastRoomAdded.GetNextRoomSpawnPoint().transform.position, m_lastRoomAdded.GetNextRoomSpawnPoint().transform.rotation, transform).GetComponent<TrumpRoom>();
+        if(m_numRooms == 1)
+        {
+            m_lastRoomAdded.SetElevatorShaftSprite(m_bottomShaft);
+        }
+        else
+        {
+            m_lastRoomAdded.SetElevatorShaftSprite(m_topShaft);
+
+        }
+
+
         m_rooms.Add(m_lastRoomAdded);
     }
 

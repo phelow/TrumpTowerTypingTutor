@@ -48,12 +48,17 @@ public class TrumpRoom : MonoBehaviour
     [SerializeField]
     private GameObject m_nextLetterSlot;
 
+    [SerializeField]
+    private SpriteRenderer m_spriteRenderer;
+
     private List<SeekPosition> m_letterBlocks;
 
     static TrumpRoom ms_instance;
 
     private string m_lastText = "";
 
+    [SerializeField]
+    private SpriteRenderer m_elevatorShaftSprite;
 
     public Character CurrentResident
     {
@@ -79,7 +84,7 @@ public class TrumpRoom : MonoBehaviour
     public void Select()
     {
         SetText("");
-        
+
     }
 
     public void Awake()
@@ -119,7 +124,7 @@ public class TrumpRoom : MonoBehaviour
     private IEnumerator CreateText(string text)
     {
         m_nextLetterSlot = m_firstLetterSlot;
-        foreach(SeekPosition letter in m_letterBlocks)
+        foreach (SeekPosition letter in m_letterBlocks)
         {
             letter.StartCoroutine(letter.End());
         }
@@ -130,6 +135,11 @@ public class TrumpRoom : MonoBehaviour
         {
             yield return MakeLetter(character);
         }
+    }
+
+    public void SetElevatorShaftSprite(Sprite room)
+    {
+        m_elevatorShaftSprite.sprite = room;
     }
 
     private IEnumerator MakeLetter(char character)
@@ -204,21 +214,14 @@ public class TrumpRoom : MonoBehaviour
 
         float t = 0.0f;
 
-        while (t < m_meetingTime)
+        if (Random.Range(0, 10) <= 5)
         {
-            float m_waitTime = Random.Range(m_minChatBubbleSpawnTime, m_maxChatBubbleSpawnTime);
+            yield return GameObject.Instantiate(this.mp_chatBubble, m_residentSlot.transform.position + new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), 0), transform.rotation, m_residentSlot.transform).GetComponent<CommunicationBubble>().FadeOutBubble();
 
-            if (Random.Range(0, 10) <= 5)
-            {
-                GameObject.Instantiate(this.mp_chatBubble, m_residentSlot.transform.position + new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), 0), transform.rotation, m_residentSlot.transform);
-
-            }
-            else
-            {
-                GameObject.Instantiate(this.mp_chatBubble, m_visitorSlot.transform.position + new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), 0), transform.rotation, m_visitorSlot.transform);
-            }
-            yield return new WaitForSeconds(m_waitTime);
-            t += m_waitTime;
+        }
+        else
+        {
+            yield return GameObject.Instantiate(this.mp_chatBubble, m_visitorSlot.transform.position + new Vector3(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f), 0), transform.rotation, m_visitorSlot.transform).GetComponent<CommunicationBubble>().FadeOutBubble();
         }
 
         m_currentVisitor.InMeeting = false;
@@ -240,7 +243,7 @@ public class TrumpRoom : MonoBehaviour
                 spaceWaitingTime = 0.0f;
             }
 
-            if(spaceWaitingTime > 3.0f)
+            if (spaceWaitingTime > 3.0f)
             {
                 if (m_selectionText.Length <= 4)
                 {
@@ -276,8 +279,7 @@ public class TrumpRoom : MonoBehaviour
 
             if (currentText.Length < m_lastText.Length)
             {
-
-                for (int i = currentText.Length; i < m_selectionText.Length; i++)
+                for (int i = currentText.Length; i < m_letterBlocks.Count; i++)
                 {
                     m_letterBlocks[i].StartCoroutine(m_letterBlocks[i].Unselect());
                 }

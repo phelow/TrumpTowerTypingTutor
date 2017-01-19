@@ -112,6 +112,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_icon: {fileID: 212109365458814254}
+  m_iconChoices:
+  - {fileID: 21300000, guid: eaae72db46dc44b4cb7250c98efa0567, type: 3}
+  - {fileID: 21300000, guid: d4896b41a2f609a40972e3ef0b09a181, type: 3}
+  - {fileID: 21300000, guid: 83d62943d485a4e49955f9ac091c53d4, type: 3}
+  - {fileID: 21300000, guid: 75b42883baf093a4198b3700752e8f8d, type: 3}
+  - {fileID: 21300000, guid: d8e76d278ad51a040951370f97d1efb5, type: 3}
+  - {fileID: 21300000, guid: 118cd2c52f9783d40a04710f08b0be22, type: 3}
   m_bubble: {fileID: 212143550363163500}
 --- !u!212 &212109365458814254
 SpriteRenderer:

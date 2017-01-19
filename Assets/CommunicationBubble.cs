@@ -6,18 +6,22 @@ public class CommunicationBubble : MonoBehaviour {
     [SerializeField]
     private SpriteRenderer m_icon;
     [SerializeField]
+    private List<Sprite> m_iconChoices;
+
+    [SerializeField]
     private SpriteRenderer m_bubble;
     private float m_fadeOutMin = .5f;
     private float m_fadeOutMax = 2.0f;
     
     // Use this for initialization
 	void Start () {
-        StartCoroutine(FadeOutBubble());
 	}
 
-    private IEnumerator FadeOutBubble()
+    public IEnumerator FadeOutBubble()
     {
-        float lerpTime = Random.Range(m_fadeOutMin, m_fadeOutMax);
+        m_icon.sprite = m_iconChoices[Random.Range(0, m_iconChoices.Count)];
+
+        float lerpTime = 2.0f;
         float t = 0.0f;
 
         while(t < lerpTime)
@@ -29,7 +33,7 @@ public class CommunicationBubble : MonoBehaviour {
             yield return new WaitForEndOfFrame();
         }
 
-        lerpTime = Random.Range(m_fadeOutMin, m_fadeOutMax);
+        lerpTime = .5f;
         t = 0.0f;
 
         while (t < lerpTime)

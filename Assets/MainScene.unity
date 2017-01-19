@@ -1009,6 +1009,16 @@ Prefab:
       propertyPath: m_RootOrder
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 212567715172594516, guid: 18e984e036bcbdb4abb448f2944552a7,
+        type: 2}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
+    - target: {fileID: 212891716493318540, guid: 18e984e036bcbdb4abb448f2944552a7,
+        type: 2}
+      propertyPath: m_SortingOrder
+      value: -1
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_ParentPrefab: {fileID: 100100000, guid: 18e984e036bcbdb4abb448f2944552a7, type: 2}
   m_IsPrefabParent: 0
@@ -2513,6 +2523,9 @@ MonoBehaviour:
   m_levelText: {fileID: 413078365}
   m_doAnythingToContinue: {fileID: 1582405167}
   m_scoreText: {fileID: 585603683}
+  m_topShaft: {fileID: 21300000, guid: 8925543f2dce17444b3a112694317036, type: 3}
+  m_middleShaft: {fileID: 21300000, guid: 8ab0c8d78fbad054082cf929f7437cbc, type: 3}
+  m_bottomShaft: {fileID: 21300000, guid: b6850f3bdc81ae24182f025470d78b7e, type: 3}
   m_message: {fileID: 1852231805}
 --- !u!4 &1862250925
 Transform:
