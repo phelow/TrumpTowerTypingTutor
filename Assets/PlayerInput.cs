@@ -16,6 +16,7 @@ public class PlayerInput : MonoBehaviour {
         {
             m_currentText = "";
             m_selectionText.text = m_currentText;
+            CameraShake.ms_instance.MegaShake();
         }
     }
 
@@ -27,6 +28,8 @@ public class PlayerInput : MonoBehaviour {
             TrumpTower.ms_instance.ValidWord(m_currentText);
             return;
         }
+        CameraShake.ms_instance.Shake();
+
         m_currentText += nextLetter;
 
         m_selectionText.text = m_currentText;
@@ -41,6 +44,8 @@ public class PlayerInput : MonoBehaviour {
         {
             m_currentText = m_currentText.Substring(0, m_currentText.Length - 1 );
         }
+        CameraShake.ms_instance.Shake();
+
 
         m_selectionText.text = m_currentText;
 
