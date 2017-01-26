@@ -13,6 +13,8 @@ public class TrumpTower : MonoBehaviour
     private int m_level = 0;
     private float m_score = 0.0f;
 
+    private int m_combo = 1;
+
     private int m_difficulty = 0;
 
     [SerializeField]
@@ -66,7 +68,7 @@ public class TrumpTower : MonoBehaviour
     [SerializeField]
     private Text m_message;
     bool selectionMade = false;
-
+    public static bool m_waitForSpace = false;
     bool m_gameOverStarted = false;
 
     public IEnumerator GameOverRoutine()
@@ -78,6 +80,19 @@ public class TrumpTower : MonoBehaviour
             yield return EndLevel();
             Fader.Instance.FadeIn(1.0f).LoadLevel(1);
         }
+    }
+
+    public bool GetInSameRoom(Character a, Character b)
+    {
+        foreach(TrumpRoom room in m_rooms)
+        {
+            if((room.CurrentVisitor == a && room.CurrentResident == b) || (room.CurrentResident == a && room.CurrentVisitor == b))
+            {
+                return true;
+            }
+        }
+
+        return false;
     }
 
     public bool IsCharacterInElevator(Character character)
@@ -159,6 +174,7 @@ public class TrumpTower : MonoBehaviour
 
     private IEnumerator EndLevel()
     {
+        m_waitForSpace = true;
         m_intermissionHighScore.text = "" + PlayerPrefs.GetFloat("HighScore", 0.0f);
 
         foreach (Character c in m_activeCharacters)
@@ -166,7 +182,7 @@ public class TrumpTower : MonoBehaviour
             c.ResetAnger();
         }
 
-        ClearAllRooms();
+        yield return ClearAllRooms();
 
         m_levelText.text = "Level " + m_level++;
         m_intermissionYourScore.text = "Your score: " + m_score;
@@ -186,7 +202,8 @@ public class TrumpTower : MonoBehaviour
             yield return new WaitForEndOfFrame();
         }
 
-        while (!Input.anyKey)
+
+        while (m_waitForSpace)
         {
             yield return new WaitForEndOfFrame();
         }
@@ -208,12 +225,12 @@ public class TrumpTower : MonoBehaviour
 
     }
 
-    public void Select(TrumpRoom room)
+    public IEnumerator Select(TrumpRoom room)
     {
         m_elevator.transform.position = room.GetElevatorPosition();
 
-        room.Select();
-        ClearAllRooms();
+        ResetOverTextOnAllRooms(room);
+        yield return room.Select();
 
         if (m_elevatorCharacter != null)
         {
@@ -250,7 +267,7 @@ public class TrumpTower : MonoBehaviour
             CheckForAnyMeetings();
 
             //TODO: fill the hotel with words to select rooms to pick people up from
-            DropoffAccessRooms();
+            yield return DropoffAccessRooms();
         }
         else
         {
@@ -266,7 +283,7 @@ public class TrumpTower : MonoBehaviour
             }
 
             //TODO: fill the hotel with words to select rooms on his agenda or empty rooms to move him to
-            DropoffAccessRooms();
+            yield return DropoffAccessRooms();
         }
     }
 
@@ -274,10 +291,9 @@ public class TrumpTower : MonoBehaviour
     {
         foreach (TrumpRoom room in m_rooms)
         {
-            room.ClearOverText();
             if (room.GetWord() == testWord && testWord != "")
             {
-                Select(room);
+                room.StartCoroutine(Select(room));
                 return true;
             }
         }
@@ -298,12 +314,24 @@ public class TrumpTower : MonoBehaviour
         return inProgress;
     }
 
+    public void ResetCombo()
+    {
+        m_combo = 1;
+        m_scoreText.text = "Score:" + m_score + " Combo:" + m_combo;
+
+    }
+    
+    public void IncrementCombo()
+    {
+        m_combo++;
+    }
+
     private void CheckForAnyMeetings()
     {
         foreach (TrumpRoom room in m_rooms)
         {
             m_score += room.CheckForMeeting();
-            m_scoreText.text = "Score:" + m_score;
+            m_scoreText.text = "Score:" + m_score + " Combo:" + m_combo * m_combo;
         }
     }
 
@@ -314,41 +342,55 @@ public class TrumpTower : MonoBehaviour
         {
             character.GenerateAgenda(m_activeCharacters.Where(x => x != character).ToList());
         }
-
+        
+        yield return DropoffAccessRooms();
         while (LevelInProgress())
         {
             CheckForAnyMeetings();
 
-            DropoffAccessRooms();
+            yield return DropoffAccessRooms();
             yield return new WaitForEndOfFrame();
         }
 
     }
 
-    private void ClearAllRooms()
+    private void ResetOverTextOnAllRooms(TrumpRoom exception)
     {
         foreach (TrumpRoom room in m_rooms)
         {
-            room.MakeUnselectable();
+            if (room == exception)
+            {
+                continue;
+            }
+            room.ClearOverText();
+        }
+
+    }
+
+    private IEnumerator ClearAllRooms()
+    {
+        foreach (TrumpRoom room in m_rooms)
+        {
+            yield return room.MakeUnselectable();
         }
     }
 
-    private void DropoffAccessRooms()
+    public IEnumerator DropoffAccessRooms()
     {
         foreach (TrumpRoom room in m_rooms)
         {
             if (room.InAMeeting())
             {
-                room.MakeUnselectable();
+                yield return room.MakeUnselectable();
             }
             else if ((room.CurrentResident != null && room.CurrentResident.HasAppointment(m_activeCharacters)) ||
                (room.CurrentVisitor != null && room.CurrentVisitor.HasAppointment(m_activeCharacters)))
             {
-                room.MakeSelectable();
+                yield return room.MakeSelectable();
             }
             else
             {
-                room.MakeUnselectable();
+                yield return room.MakeUnselectable();
             }
         }
     }
@@ -414,7 +456,7 @@ public class TrumpTower : MonoBehaviour
         //TODO: pick a unused character at random.
 
 
-        if (m_numCharacters < 12)
+        if (m_numCharacters < 14)
         {
             //Add a new room
             Character newCharacter = m_newCharacterQueue.Pop();

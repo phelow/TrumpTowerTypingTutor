@@ -11,12 +11,23 @@ public class PlayerInput : MonoBehaviour {
 
     void TryToVerify()
     {
+        if (TrumpTower.m_waitForSpace)
+        {
+            TrumpTower.m_waitForSpace = false;
+            return;
+        }
+
         //TODO: ReAddWord 
         if (TrumpTower.ms_instance.HasSelection(m_currentText))
         {
             m_currentText = "";
             m_selectionText.text = m_currentText;
             CameraShake.ms_instance.MegaShake();
+        }
+
+        else
+        {
+            MistakeEffect.ms_instance.StartCoroutine(MistakeEffect.ms_instance.MakeMistake());
         }
     }
 
@@ -25,6 +36,8 @@ public class PlayerInput : MonoBehaviour {
         string potentialNewWord = m_currentText + nextLetter;        
         if (!TrumpTower.ms_instance.ValidWord(potentialNewWord))
         {
+            MistakeEffect.ms_instance.StartCoroutine(MistakeEffect.ms_instance.MakeMistake());
+
             TrumpTower.ms_instance.ValidWord(m_currentText);
             return;
         }

@@ -206,9 +206,30 @@ public class Character : MonoBehaviour
         StartCoroutine(FadeInBubble());
         m_agenda = new List<Character>();
         int totalAgenda = Random.Range(2, Mathf.Max(2, TrumpTower.ms_instance.GetDifficulty()));
-        for (int i = 0; i < Mathf.Min(6, totalAgenda); i++)
+
+        List<Character> workableCharacters = new List<Character>();
+
+        foreach (Character character in m_characterBase)
         {
-            m_agenda.Add(m_characterBase[Random.Range(0, m_characterBase.Count)]);
+            if (character == this)
+            {
+                continue;
+            }
+
+            if (TrumpTower.ms_instance.GetInSameRoom(character, this))
+            {
+                continue;
+            }
+
+            workableCharacters.Add(character);
+        }
+
+        for (int i = 0; i < Mathf.Min(workableCharacters.Count, totalAgenda); i++)
+        {
+            Character addedCharacter = workableCharacters[Random.Range(0, workableCharacters.Count)];
+
+            m_agenda.Add(addedCharacter);
+            workableCharacters.Remove(addedCharacter);
         }
 
         m_itineraryBubble.SetItinerary(m_agenda);

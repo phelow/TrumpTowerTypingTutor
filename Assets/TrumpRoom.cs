@@ -60,8 +60,6 @@ public class TrumpRoom : MonoBehaviour
     [SerializeField]
     private SpriteRenderer m_elevatorShaftSprite;
 
-    private IEnumerator textRoutine;
-
     public Character CurrentResident
     {
         get
@@ -83,9 +81,9 @@ public class TrumpRoom : MonoBehaviour
         return m_elevatorSlot.transform.position;
     }
 
-    public void Select()
+    public IEnumerator Select()
     {
-        SetText("");
+        yield return MakeUnselectable();
     }
 
     public void Awake()
@@ -93,9 +91,7 @@ public class TrumpRoom : MonoBehaviour
         ms_instance = this;
         m_nextLetterSlot = m_firstLetterSlot;
         m_letterBlocks = new List<SeekPosition>();
-        textRoutine = CreateText("");
-
-        SetText("");
+        StartCoroutine(CreateText(""));
         
 
         StartCoroutine(TellToPressSpace());
@@ -106,14 +102,14 @@ public class TrumpRoom : MonoBehaviour
         return ms_instance.mp_chatBubble;
     }
 
-    public void MakeSelectable()
+    public IEnumerator MakeSelectable()
     {
         if (m_selectionText != "")
         {
-            return;
+            yield break;
         }
 
-        SetText(Dictionary.ms_instance.PickWord(TrumpTower.ms_instance.GetDifficulty()));
+        yield return CreateText(Dictionary.ms_instance.PickWord(TrumpTower.ms_instance.GetDifficulty()));
     }
 
     public bool InAMeeting()
@@ -121,20 +117,19 @@ public class TrumpRoom : MonoBehaviour
         return ((m_currentVisitor != null && m_currentVisitor.InMeeting) || (m_currentResident !=null && m_currentResident.InMeeting));
     }
 
-    public void MakeUnselectable()
+    public void ResetOverText()
     {
-        SetText("");
+        
     }
-    public void SetText(string text)
+
+    public IEnumerator MakeUnselectable()
     {
-        m_selectionText = text;
-        StopCoroutine(textRoutine);
-        textRoutine = CreateText(text);
-        StartCoroutine(textRoutine);
+        yield return CreateText("");
     }
 
     private IEnumerator CreateText(string text)
     {
+        m_selectionText = text;
         m_nextLetterSlot = m_firstLetterSlot;
         foreach (SeekPosition letter in m_letterBlocks)
         {
@@ -213,6 +208,7 @@ public class TrumpRoom : MonoBehaviour
     public void ClearOverText()
     {
         m_overText.text = "";
+        CheckForSubstring("");
     }
 
     private float m_minChatBubbleSpawnTime = 1.0f;
@@ -237,6 +233,8 @@ public class TrumpRoom : MonoBehaviour
 
         m_currentVisitor.InMeeting = false;
         m_currentResident.InMeeting = false;
+
+        yield return TrumpTower.ms_instance.DropoffAccessRooms();
     }
 
     private IEnumerator TellToPressSpace()
@@ -315,6 +313,7 @@ public class TrumpRoom : MonoBehaviour
 
         if (m_currentResident.GetAppointments().Contains(m_currentVisitor) || m_currentVisitor.GetAppointments().Contains(m_currentResident))
         {
+            TrumpTower.ms_instance.IncrementCombo();
             m_currentResident.MeetWith(m_currentVisitor);
             m_currentVisitor.MeetWith(m_currentResident);
             StartCoroutine(MeetingRoutine());

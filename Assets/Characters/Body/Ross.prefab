@@ -35,7 +35,7 @@ Transform:
   m_PrefabInternal: {fileID: 100100000}
   m_GameObject: {fileID: 1326950377538450}
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalPosition: {x: 23.51, y: 0, z: 0}
   m_LocalScale: {x: 0.5, y: 0.5, z: 0.5}
   m_Children: []
   m_Father: {fileID: 0}
@@ -56,7 +56,7 @@ MonoBehaviour:
   mp_itineraryBackdrop: {fileID: 1966863918216092, guid: a363d43d5f23481498ece7170c6c5682,
     type: 2}
   mp_chatBubble: {fileID: 0}
-  mp_icon: {fileID: 1454068251809148, guid: aa998fbaf895a2d40b242c780ff8bf52, type: 2}
+  mp_icon: {fileID: 1699615532835896, guid: cfbd24b633e501c4486c3633a4398836, type: 2}
   m_spriteRenderer: {fileID: 212239139617299430}
   InMeeting: 0
 --- !u!212 &212239139617299430
@@ -90,7 +90,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: 945275713
   m_SortingOrder: 0
-  m_Sprite: {fileID: 21300000, guid: 7995957637e17f341854dc4b3d0728c2, type: 3}
-  m_Color: {r: 1, g: 0.5019608, b: 0.5019608, a: 1}
+  m_Sprite: {fileID: 21300000, guid: 263e80c549c917340a0a4f931e105d76, type: 3}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
   m_FlipY: 0

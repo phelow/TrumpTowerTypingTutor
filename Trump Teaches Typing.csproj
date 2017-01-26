@@ -86,6 +86,7 @@
     <Compile Include="Assets\ItineraryBubble.cs" />
     <Compile Include="Assets\JumpThisScene.cs" />
     <Compile Include="Assets\MainMenuFadeManager.cs" />
+    <Compile Include="Assets\MistakeEffect.cs" />
     <Compile Include="Assets\PlayerInput.cs" />
     <Compile Include="Assets\RandomRoom.cs" />
     <Compile Include="Assets\Screen Fader Pack\Code\DefaultScreenFader.cs" />
