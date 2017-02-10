@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4583390275342496}
   - component: {fileID: 212901948379654698}
   - component: {fileID: 114521116319608660}
+  - component: {fileID: 50192129263597528}
   m_Layer: 0
   m_Name: Sessions
   m_TagString: Untagged
@@ -41,6 +42,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50192129263597528
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1500325192424556}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 3
 --- !u!114 &114521116319608660
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -59,6 +80,7 @@ MonoBehaviour:
   mp_icon: {fileID: 1819052111044522, guid: 0f76dd74633b06e428e13adf2e5dcce9, type: 2}
   m_spriteRenderer: {fileID: 212901948379654698}
   InMeeting: 0
+  m_rigidbody: {fileID: 50192129263597528}
 --- !u!212 &212901948379654698
 SpriteRenderer:
   m_ObjectHideFlags: 1

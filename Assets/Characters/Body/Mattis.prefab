@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4875183254871648}
   - component: {fileID: 212083038387279868}
   - component: {fileID: 114229830810818408}
+  - component: {fileID: 50007693912656828}
   m_Layer: 0
   m_Name: Mattis
   m_TagString: Untagged
@@ -41,6 +42,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50007693912656828
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1511778697224340}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 3
 --- !u!114 &114229830810818408
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -59,6 +80,7 @@ MonoBehaviour:
   mp_icon: {fileID: 1723739255358438, guid: 399409c69af46e84a82e97350b9da2bf, type: 2}
   m_spriteRenderer: {fileID: 212083038387279868}
   InMeeting: 0
+  m_rigidbody: {fileID: 50007693912656828}
 --- !u!212 &212083038387279868
 SpriteRenderer:
   m_ObjectHideFlags: 1

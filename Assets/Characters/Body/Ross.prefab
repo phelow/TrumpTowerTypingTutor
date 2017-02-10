@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4440036912976106}
   - component: {fileID: 212239139617299430}
   - component: {fileID: 114309009711457456}
+  - component: {fileID: 50056943612464668}
   m_Layer: 0
   m_Name: Ross
   m_TagString: Untagged
@@ -41,6 +42,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50056943612464668
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1326950377538450}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 3
 --- !u!114 &114309009711457456
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -59,6 +80,7 @@ MonoBehaviour:
   mp_icon: {fileID: 1699615532835896, guid: cfbd24b633e501c4486c3633a4398836, type: 2}
   m_spriteRenderer: {fileID: 212239139617299430}
   InMeeting: 0
+  m_rigidbody: {fileID: 50056943612464668}
 --- !u!212 &212239139617299430
 SpriteRenderer:
   m_ObjectHideFlags: 1

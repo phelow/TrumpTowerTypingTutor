@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4746850316783482}
   - component: {fileID: 212850929707708540}
   - component: {fileID: 114332907033059756}
+  - component: {fileID: 50448981069850166}
   m_Layer: 0
   m_Name: Pence
   m_TagString: Untagged
@@ -41,6 +42,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50448981069850166
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1379990901998230}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 3
 --- !u!114 &114332907033059756
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -59,6 +80,7 @@ MonoBehaviour:
   mp_icon: {fileID: 1804870803250310, guid: 32416031a4aea8c438de1be06f9c684c, type: 2}
   m_spriteRenderer: {fileID: 212850929707708540}
   InMeeting: 0
+  m_rigidbody: {fileID: 50448981069850166}
 --- !u!212 &212850929707708540
 SpriteRenderer:
   m_ObjectHideFlags: 1

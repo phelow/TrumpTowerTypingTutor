@@ -35,6 +35,9 @@ public class Character : MonoBehaviour
 
     private IEnumerator m_angerRoutine;
 
+    [SerializeField]
+    private Rigidbody2D m_rigidbody;
+
     public void FulfillAppointmnet(Character character)
     {
         m_agenda.Remove(character);
@@ -60,6 +63,8 @@ public class Character : MonoBehaviour
         m_angerRoutine = GetAngry();
         m_agenda = new List<Character>();
         m_itineraryBubble = GameObject.Instantiate(mp_itineraryBackdrop, this.transform.position, this.transform.rotation, this.transform).GetComponent<ItineraryBubble>();
+
+        m_itineraryBubble.GetComponent<ItineraryBubble>().SetSpringStart(m_rigidbody);
         StartCoroutine(GetAngry());
     }
 
@@ -176,11 +181,40 @@ public class Character : MonoBehaviour
         return m_agenda.Count > 0;
     }
 
+    private IEnumerator CompleteMeeting(Character character)
+    {
+
+        GameObject go = GameObject.Instantiate(character.GetIcon(), transform.position,transform.rotation,null);
+
+        float i = 0.0f;
+
+        while (i < 1.0f)
+        {
+            i += Time.deltaTime;
+            go.transform.localScale = Vector3.one * Mathf.Lerp(0.0f, 3.0f, i);
+            yield return new WaitForEndOfFrame();
+        }
+
+        i = 0.0f;
+
+        while (i < 1.0f)
+        {
+            i += Time.deltaTime;
+            go.transform.localScale = Vector3.one * Mathf.Lerp(3.0f, 0.0f,i);
+            yield return new WaitForEndOfFrame();
+        }
+
+        Destroy(go); 
+    }
+
     public void MeetWith(Character character)
     {
         if (m_agenda.Contains(character))
         {
             m_agenda.Remove(character);
+
+            StartCoroutine(CompleteMeeting(character));
+
             m_itineraryBubble.SetItinerary(m_agenda);
         }
     }

@@ -21,6 +21,7 @@ GameObject:
   - component: {fileID: 4038652946608718}
   - component: {fileID: 212314686162901444}
   - component: {fileID: 114102206019035626}
+  - component: {fileID: 50570738411052438}
   m_Layer: 0
   m_Name: Obama
   m_TagString: Untagged
@@ -41,6 +42,26 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!50 &50570738411052438
+Rigidbody2D:
+  serializedVersion: 4
+  m_ObjectHideFlags: 1
+  m_PrefabParentObject: {fileID: 0}
+  m_PrefabInternal: {fileID: 100100000}
+  m_GameObject: {fileID: 1994946600295956}
+  m_BodyType: 0
+  m_Simulated: 1
+  m_UseFullKinematicContacts: 0
+  m_UseAutoMass: 0
+  m_Mass: 1
+  m_LinearDrag: 0
+  m_AngularDrag: 0.05
+  m_GravityScale: 0
+  m_Material: {fileID: 0}
+  m_Interpolate: 0
+  m_SleepingMode: 1
+  m_CollisionDetection: 0
+  m_Constraints: 3
 --- !u!114 &114102206019035626
 MonoBehaviour:
   m_ObjectHideFlags: 1
@@ -59,6 +80,7 @@ MonoBehaviour:
   mp_icon: {fileID: 1894267691871194, guid: ebff76999186a0e448a43915681bc324, type: 2}
   m_spriteRenderer: {fileID: 212314686162901444}
   InMeeting: 0
+  m_rigidbody: {fileID: 50570738411052438}
 --- !u!212 &212314686162901444
 SpriteRenderer:
   m_ObjectHideFlags: 1

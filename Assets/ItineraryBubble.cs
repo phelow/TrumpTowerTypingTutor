@@ -30,11 +30,35 @@ public class ItineraryBubble : MonoBehaviour
     [SerializeField]
     private Sprite m_sextupleBubble;
 
+    [SerializeField]
+    private SpringJoint2D m_springjoint;
+
+    [SerializeField]
+    private Rigidbody2D m_rigidbody;
+
+    private float m_jitterRatio = 0.0f;
+
     // Use this for initialization
     void Start()
     {
         m_characterHeadshots = new List<GameObject>();
         ResetSpawnPoint();
+        StartCoroutine(Jitter());
+    }
+
+    public void SetSpringStart(Rigidbody2D rigidbody)
+    {
+        m_springjoint.connectedBody = rigidbody;
+    }
+
+    private IEnumerator Jitter()
+    {
+        while (true)
+        {
+            m_rigidbody.AddForce((new Vector2(Random.Range(-1.0f, 1.0f), Random.Range(-1.0f, 1.0f))).normalized * Mathf.Pow(1+m_jitterRatio,6.5f));
+
+            yield return new WaitForSeconds(Random.Range(.9f - m_jitterRatio, 1.1f - m_jitterRatio));
+        }
     }
 
     void ResetSpawnPoint()
@@ -55,6 +79,7 @@ public class ItineraryBubble : MonoBehaviour
 
     public void SetAnger(float angerRatio)
     {
+        m_jitterRatio = angerRatio;
         m_spriteRenderer.color = Color.Lerp(Color.white, Color.red, angerRatio);
     }
 
