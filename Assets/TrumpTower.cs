@@ -148,6 +148,7 @@ public class TrumpTower : MonoBehaviour
 
     void Awake()
     {
+        Character.StartGame();
         ms_instance = this;
     }
 
@@ -225,6 +226,18 @@ public class TrumpTower : MonoBehaviour
 
     }
 
+    public bool AnyCharacterHasAppointmentWith(Character character)
+    {
+        foreach(Character c in m_activeCharacters)
+        {
+            if (c.GetAppointments().Contains(character))
+            {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public IEnumerator Select(TrumpRoom room)
     {
         m_elevator.transform.position = room.GetElevatorPosition();
@@ -247,7 +260,7 @@ public class TrumpTower : MonoBehaviour
                 SetElevatorCharacter(temp);
 
             }
-            else if (room.CurrentVisitor != null && room.CurrentVisitor.HasAppointment())
+            else if (room.CurrentVisitor != null && room.CurrentVisitor.HasAppointment() || AnyCharacterHasAppointmentWith(room.CurrentVisitor))
             {
 
                 Character temp = room.CurrentVisitor;
@@ -255,7 +268,7 @@ public class TrumpTower : MonoBehaviour
                 SetElevatorCharacter(temp);
 
             }
-            else if (room.CurrentResident !=null && room.CurrentResident.HasAppointment())
+            else if (room.CurrentResident !=null && room.CurrentResident.HasAppointment() || AnyCharacterHasAppointmentWith(room.CurrentResident))
             {
                 Character temp = room.CurrentResident;
                 room.SetResident(m_elevatorCharacter);
@@ -449,7 +462,7 @@ public class TrumpTower : MonoBehaviour
     {
         //TODO: only add a room when over capacity
 
-        if (m_numRooms < 9)
+        if (m_numRooms < 9 && m_numRooms*2 - 3 < m_numCharacters)
         {
             AddARoom();
         }

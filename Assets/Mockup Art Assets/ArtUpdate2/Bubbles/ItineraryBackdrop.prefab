@@ -427,6 +427,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ce1498e5287315645920e72ecef3c509, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_verticalOffset: -0.2
   m_startPoints:
   - {fileID: 1465440549986994}
   - {fileID: 1429131587458978}

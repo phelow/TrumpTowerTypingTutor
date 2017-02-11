@@ -16,11 +16,12 @@ public class Character : MonoBehaviour
     [SerializeField]
     private GameObject mp_chatBubble;
 
+
     private ItineraryBubble m_itineraryBubble;
 
     private float m_angerSeconds = 0.0f;
 
-    private float m_maxAnger = 60.0f;
+    private static float ms_maxAnger = 40.0f;
 
     [SerializeField]
     private GameObject mp_icon;
@@ -37,6 +38,12 @@ public class Character : MonoBehaviour
 
     [SerializeField]
     private Rigidbody2D m_rigidbody;
+
+
+    public static void StartGame()
+    {
+        ms_maxAnger = 10.0f;
+    }
 
     public void FulfillAppointmnet(Character character)
     {
@@ -55,7 +62,7 @@ public class Character : MonoBehaviour
 
     public float GetHappinessPoints()
     {
-        return m_maxAnger - m_angerSeconds;
+        return ms_maxAnger - m_angerSeconds;
     }
 
     void Start()
@@ -71,6 +78,8 @@ public class Character : MonoBehaviour
     public void ResetAnger()
     {
         m_angerSeconds = 0.0f;
+        ms_maxAnger += 4.0f;
+        m_itineraryBubble.SetAnger(m_angerSeconds / ms_maxAnger);
     }
 
     public IEnumerator FadeInFadeOut()
@@ -106,7 +115,7 @@ public class Character : MonoBehaviour
         }
 
         ResetAnger();
-        while (m_angerSeconds < m_maxAnger)
+        while (m_angerSeconds < ms_maxAnger)
         {
             while (m_agenda.Count == 0)
             {
@@ -121,7 +130,7 @@ public class Character : MonoBehaviour
                 m_itineraryBubble.SetFade(t);
                 yield return new WaitForEndOfFrame();
             }
-            while (m_agenda.Count > 0 && m_angerSeconds < m_maxAnger)
+            while (m_agenda.Count > 0 && m_angerSeconds < ms_maxAnger)
             {
                 if (InMeeting == false && !TrumpTower.ms_instance.IsCharacterInElevator(this) && CanMeet())
                 {
@@ -138,7 +147,7 @@ public class Character : MonoBehaviour
 
                 if (m_agenda.Count > 0)
                 {
-                    m_itineraryBubble.SetAnger(m_angerSeconds / m_maxAnger);
+                    m_itineraryBubble.SetAnger(m_angerSeconds / ms_maxAnger);
                 }
                 yield return new WaitForSeconds(1.0f);
             }

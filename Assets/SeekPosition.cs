@@ -25,6 +25,9 @@ public class SeekPosition : MonoBehaviour {
     [SerializeField]
     private TextMesh m_selectedText;
 
+    [SerializeField]
+    private AnimationCurve m_animationCurve;
+
     private Vector3 m_targetPosition;
     
     private void KickAway(Rigidbody2D kickBody, GameObject kickObject)
@@ -41,7 +44,7 @@ public class SeekPosition : MonoBehaviour {
         //lerp unselected block to the core position
 
         float t = 0.0f;
-        float lerpTime = Random.Range(0.3f, .35f);
+        float lerpTime = Random.Range(0.1f, .15f);
         Vector3 originalPosition = go_lerpIn.transform.position;
 
         rb_lerpIn.velocity *= 0;
@@ -49,7 +52,7 @@ public class SeekPosition : MonoBehaviour {
         while (t <= lerpTime)
         {
             t += Time.deltaTime;
-            go_lerpIn.transform.position = Vector3.Lerp(originalPosition, m_targetPosition, t / lerpTime);
+            go_lerpIn.transform.position = Vector3.Lerp(originalPosition, m_targetPosition, m_animationCurve.Evaluate(t / lerpTime));
             yield return new WaitForEndOfFrame();
         }
     }

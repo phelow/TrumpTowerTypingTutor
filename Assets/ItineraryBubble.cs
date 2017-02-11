@@ -8,6 +8,9 @@ public class ItineraryBubble : MonoBehaviour
     private float m_iconSpawnIncrementation = .25f;
 
     [SerializeField]
+    private float m_verticalOffset = .25f;
+
+    [SerializeField]
     private List<GameObject> m_startPoints;
 
     private List<GameObject> m_characterHeadshots;
@@ -43,6 +46,7 @@ public class ItineraryBubble : MonoBehaviour
     {
         m_characterHeadshots = new List<GameObject>();
         ResetSpawnPoint();
+        transform.position = new Vector3(transform.position.x, transform.position.y + m_verticalOffset, transform.position.z);
         StartCoroutine(Jitter());
     }
 
@@ -126,6 +130,7 @@ public class ItineraryBubble : MonoBehaviour
         foreach (Character c in characters)
         {
             GameObject headshot = GameObject.Instantiate(c.GetIcon(), this.transform);
+            headshot.transform.localScale *= 2.0f;
             headshot.transform.position = m_iconSpawnPoint;
             m_characterHeadshots.Add(headshot);
             m_iconSpawnPoint.x += m_iconSpawnIncrementation;
